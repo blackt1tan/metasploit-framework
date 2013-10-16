@@ -84,15 +84,15 @@ class Metasploit3 < Msf::Post
       'SortIndex' => 0,
       'Columns' =>
       [
-        'AuthID', 'Package', 'Domain', 'User', 'Password'
+        'Package', 'Domain', 'User', 'Password'
       ]
     )
 
-    unique_results = res.index_by { |r| "#{r[:authid]}#{r[:user]}#{r[:password]}" }.values
+    unique_results = res.uniq { |r| "#{r[:domain]}#{r[:user]}#{r[:password]}" }
 
     unique_results.each do |result|
       next if is_system_user? result[:user]
-      table << [result[:authid], result[:package], result[:domain], result[:user], result[:password]]
+      table << [result[:package], result[:domain], result[:user], result[:password]]
       report_creds(result[:domain], result[:user], result[:password])
     end
 
